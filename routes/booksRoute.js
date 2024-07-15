@@ -71,47 +71,53 @@ router.get('/:id', async (request, response)=> {
 
 })
 
-// Update a book
-router.put('/:id', async (request, response) => {
+//update a book
+
+router.put('/:id', async (request, response)=> {
     try {
-        const { id } = request.params;
+        if(
+            !request.body.title ||
+            !request.body.author ||
+            !request.body.publishYear||
+            !request.body.price 
+        ){
+            return response.status(400).send( {
+                message: "Send all required fields: title, author, publishYear, price",
 
-        if (!request.body.title || !request.body.author || !request.body.publishYear || !request.body.price) {
-            return response.status(400).send({
-                message: "Send all required fields: title, author, publishYear, price"
-            });
+            })
         }
 
-        const updatedBook = await Book.findByIdAndUpdate(id, request.body, { new: true });
+        const { id } = request.params
 
-        if (!updatedBook) {
-            return response.status(404).json({ message: 'Book not found.' });
+        const result = await Book.findByIdAndUpdate( id, request.body)
+        if (!result) {
+            return response.status(404).json({ message: 'Book not found.'})
         }
+        return response.status(200).send({message: ' Book updated succesfully'})
 
-        return response.status(200).json({ message: 'Book updated successfully.', data: updatedBook });
     } catch (error) {
-        console.log(error.message);
-        response.status(500).send({ message: error.message });
+        console.log(error.message)
+        response.status(500).send( {message: error.message})
     }
-});
+})
 
+//delete a book
 
-// Delete a book
-router.delete('/:id', async (request, response) => {
+router.delete('/:id', async (request, response)=>{
     try {
-        const { id } = request.params;
-        const deletedBook = await Book.findByIdAndDelete(id);
 
-        if (!deletedBook) {
-            return response.status(404).json({ message: 'Book not found.' });
+        const { id } = request.params
+        const result = await Book.findByIdAndDelete(id)
+        if (!result){
+            return response.status(404).json( { message: "Book not found."})
         }
 
-        return response.status(200).json({ message: 'Book deleted successfully.' });
-    } catch (error) {
-        console.log(error.message);
-        response.status(500).send({ message: error.message });
-    }
-});
+        return response.status(200).send( {message: "Book was deleted successfully. "})
 
+    } catch (error){
+        console.log(error.message)
+        response.status(500).send( {message: error.message})
+    }
+})
 
 export default router;
