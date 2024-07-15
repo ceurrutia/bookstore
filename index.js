@@ -15,11 +15,19 @@ const app = express()
 
 //option 2 cors
 
+const allowedOrigins = ['http://localhost:5173', 'https://tu-frontend.vercel.app'];
+
 app.use(cors({
-    origin: 'https://bookstorefrontend-ci3f45w6b-cecilia-urrutias-projects.vercel.app/',
+    origin: function (origin, callback) {
+        if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type']
- }))
+}));
 
 app.use(express.json())
 
