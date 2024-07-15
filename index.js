@@ -1,25 +1,19 @@
-import express, { response } from "express"
-import { PORT, mongoDBURL} from "./config.js"
-import mongoose from "mongoose"
-import { Book } from "./models/bookModel.js"
-import booksRoute from './routes/booksRoute.js'
-import cors from 'cors'
+import express from "express";
+import mongoose from "mongoose";
+import cors from 'cors';
 import dotenv from 'dotenv';
+import { PORT, mongoDBURL } from "./config.js";
+import booksRoute from './routes/booksRoute.js';
 
+dotenv.config();
 
-const app = express()
+const app = express();
 
-//middleware
-//Handling cors policy for all *
-// app.use(cors())
-
-//option 2 cors
-
-const allowedOrigins = ['http://localhost:5173', 'https://bookstorefrontend-henna.vercel.app/'];
-
+// Middleware
 app.use(cors({
     origin: function (origin, callback) {
-        if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+        const allowedOrigins = ['http://localhost:5173', 'https://bookstorefrontend-henna.vercel.app'];
+        if (!origin || allowedOrigins.includes(origin)) {
             callback(null, true);
         } else {
             callback(new Error('Not allowed by CORS'));
@@ -28,34 +22,24 @@ app.use(cors({
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type']
 }));
+app.use(express.json());
 
-app.use(express.json())
+// Routes
+app.get("/", (req, res) => {
+    res.status(200).send("<h1>Welcome to the Admin Panel</h1>");
+});
 
-app.get("/", (request, response) => {
-    console.log(request)
-    return response.status(234).send("<h1>Admin </h1>")
-})
+app.use('/books', booksRoute);
 
-//refactor
-
-app.use('/books', booksRoute)
-
-//mongoose connection
-
-mongoose
-.connect(mongoDBURL)
-.then(()=> {
-    console.log("App connected to database correctly")
-    app.listen(PORT, ()=> {
-        console.log(`App is listening on port ${ PORT }`)
-    })
-})
-.catch((error)=> {
-    console.log(error)
-})
-
-
-
-
-
-
+// Connect to MongoDB
+mongoose.connect(mongoDBURL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+}).then(() => {
+    console.log("Connected to MongoDB");
+    
+    
+    app.listen(PORT, () => {
+        console.log(`Server is running on port ${PORT}`);
+    });
+}).catch(err => console.error("MongoDB connection error:", err));
