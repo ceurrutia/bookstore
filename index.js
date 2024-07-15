@@ -16,7 +16,7 @@ const app = express()
 //option 2 cors
 
 app.use(cors({
-    origin: 'http://localhost:5173',
+    origin: 'https://bookstorefrontend-ci3f45w6b-cecilia-urrutias-projects.vercel.app/',
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type']
  }))
