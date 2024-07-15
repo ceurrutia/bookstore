@@ -15,7 +15,7 @@ const app = express()
 
 //option 2 cors
 
-const allowedOrigins = ['https://bookstorefrontend-ci3f45w6b-cecilia-urrutias-projects.vercel.app'];
+const allowedOrigins = ['https://bookstorefrontend-henna.vercel.app/'];
 
 app.use(cors({
     origin: function (origin, callback) {
