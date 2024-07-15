@@ -15,7 +15,7 @@ const app = express()
 
 //option 2 cors
 
-const allowedOrigins = ['https://bookstorefrontend-henna.vercel.app/'];
+const allowedOrigins = ['http://localhost:5173', 'https://bookstorefrontend-henna.vercel.app/'];
 
 app.use(cors({
     origin: function (origin, callback) {
